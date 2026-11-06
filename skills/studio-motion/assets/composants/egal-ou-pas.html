@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}body{width:1080px;height:1920px;overflow:hidden}</style></head><body>
+<!-- MODÈLE STUDIO MOTION : deux éléments, « = ? » barré en « ≠ » + NON. À changer : les étiquettes, les temps (est 1.12, non 2.83). Remplace tv()/bolt() par d'autres dessins de lib.js si besoin. -->
+<script>window.CHARTE = { accent: '#04529A' };   // <- ta couleur d'accent</script>
+<script src="lib.js"></script><script>
+// B, short 2.93 - 6.14 (local): "Mais est-ce que cette télévision (.60) est (1.12) le courant électrique (1.40-1.79) ? Bien sûr que non (2.83)."
+// TV left and bolt right; an "=" with a "?" between them on "est"; on "non" a slash cuts it into "≠", it shakes, "NON" pops.
+page(t => {
+  let h = '';
+  const L = 250, R = 830, Y = 440;
+  h += tv(L, Y, .82, 1, t);
+  h += txt(L, Y + 200, 'Télévision', 44, 800, K);
+  const bp = OS(t - 1.35, 11, .42);
+  if (bp > 0) { h += bolt(R, Y, 1.25 * bp, B, bp); h += txt(R, Y + 200, 'Courant', 44, 800, B, bp); }
+  const eq = OS(t - 1.05, 12, .45), no = OS(t - 2.8, 14, .35), sh = no > 0 ? Math.sin(t * 70) * 10 * Math.exp(-(t - 2.8) * 7) : 0;
+  if (eq > 0) {
+    h += `<g transform="translate(${540 + sh} ${Y}) scale(${eq})">`;
+    h += `<circle r="92" fill="${W}" stroke="${no > 0 ? K : B}" stroke-width="8"/>`;
+    h += `<rect x="-46" y="-26" width="92" height="16" rx="8" fill="${no > 0 ? K : B}"/><rect x="-46" y="10" width="92" height="16" rx="8" fill="${no > 0 ? K : B}"/>`;
+    const sl = E((t - 2.8) / .2); if (sl > 0) h += `<line x1="28" y1="-56" x2="${28 - 56 * sl}" y2="${-56 + 112 * sl}" stroke="${K}" stroke-width="16" stroke-linecap="round"/>`;
+    h += `</g>`;
+    const q = OS(t - 1.2, 12, .4) * (1 - E((t - 2.8) / .15));
+    if (q > 0) h += chip(540, Y - 150, '?', q, B, W, 54);
+  }
+  if (no > 0) h += chip(540 + sh, Y - 160, 'NON', no, K, W, 52);
+  h += ring(540, Y, 92, 300, 2.8, t, .7, 9);
+  return h;
+});
+</script></body></html>

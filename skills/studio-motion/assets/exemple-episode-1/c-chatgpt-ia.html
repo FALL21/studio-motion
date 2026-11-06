@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}body{width:1080px;height:1920px;overflow:hidden}</style></head><body><script src="textes.js"></script><script src="lib.js"></script><script>
+const X = (window.TEXTES || {}).c || {};   // textes modifiables dans textes.js
+// C, short 6.14 - 10.69 (local): "Eh bien, de la même manière (.71), ChatGPT (1.42) utilise (1.72) de l'intelligence (2.22)
+// artificielle (2.81) pour fonctionner (3.89)." Product (chat window) left, technology (IA core) right; a cable connects
+// them, current flows from the core into the app, the app types and answers.
+page(t => {
+  let h = '';
+  h += chip(540, 110, X.pastille ?? 'Même logique', OS(t - .65, 12, .45), K, W, 36);
+  const L = 280, R = 805, Y = 430;
+  const cw = OS(t - 1.35, 11, .45);
+  if (cw > 0) { h += shadowEl(L, Y + 175, 160 * cw, .08 * cw); h += chatWin(L, Y, 1.0 * cw, cl((t - 3.2) / .2), E((t - 3.85) / .5), t, X.appli); }
+  h += riseText(1.6, t, L, Y + 225, X.produit ?? 'Le produit', 44, 800, K);
+  const ia = OS(t - 2.15, 10, .45);
+  if (ia > 0) h += iaCore(R, Y, .85, ia, t, X.coeur ?? 'IA');
+  h += riseText(2.75, t, R, Y + 225, X.technologie ?? 'La technologie', 44, 800, B);
+  const d = `M${R - 130} ${Y} C ${R - 220} ${Y + 90}, ${L + 260} ${Y + 90}, ${L + 172} ${Y}`;
+  h += cable(d, 340, E((t - 1.75) / .5), cl((t - 2.8) / .3), t, 10);
+  h += ring(L, Y, 170, 330, 3.85, t);
+  return h;
+});
+</script></body></html>

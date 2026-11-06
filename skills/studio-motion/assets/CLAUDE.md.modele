@@ -1,0 +1,29 @@
+# Studio vidéo de {{TON NOM}}
+
+Ce dossier est mon studio de montage. Pour monter, suivre le skill `studio-motion`. Ma voix et mes règles de fond : `video-agent/voice.md`.
+
+## Avant chaque montage
+- Me demander quel style utiliser. Styles disponibles : {{liste}}.
+- Me montrer le storyboard (phrase → animation) et attendre mon accord avant d'animer.
+
+## Ma charte
+- Couleurs : {{ACCENT}}, blanc, noir. Rien d'autre.
+
+## Ma signature
+- « {{ma signature, mot pour mot}} » à la fin de chaque vidéo. Si je ne la dis pas dans la prise, me proposer de l'enregistrer ; en attendant, carte de fin animée.
+
+## Langues et mots à vérifier
+- Je parle {{français, avec des mots de ...}}. Un mot incertain dans une autre langue : l'écrire comme on l'entend et me demander l'orthographe avant le rendu final.
+- Noms propres à toujours corriger dans les sous-titres : {{mon nom, mes marques...}}.
+
+## Qualité (ne jamais sauter)
+- Rendre avec `short.mjs all` (jamais `render` seul : vidéo muette).
+- Avant de m'envoyer une vidéo : `verifier_video.sh` (son, volume, transcription, cadrage).
+- Caméra : `cam.q: 1`, tête entière avec de l'air au-dessus (`layout.card` zoom 1.0, bias 0.40).
+- Voix : `voiceFx` (voir le guide son du skill).
+
+## Dossiers
+- Mes prises : `A-Roll/` ; mes références de style : `Références/` ; mes vidéos finies : `Export/`.
+
+## Corrections déjà faites (à ne pas refaire)
+- {{chaque remarque que je fais devient une ligne ici}}

@@ -1,0 +1,88 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Short 3.55 - 6.79 s: "L'intelligence artificielle, c'est un ensemble de techniques"
+     Six technique tiles (vision, langage, données, apprentissage, automatisation, algorithmes) float scattered (0.2 s),
+     snap together into a honeycomb around a solid blue "IA" core on "ensemble" (local 2.1), then light up one after
+     the other on "techniques" (2.8). Title "Un ensemble de techniques" with a drawn underline. Draws in y 40 - 760. -->
+<style>
+  html, body { margin: 0; background: transparent; }
+  body { width: 1080px; height: 1920px; overflow: hidden; -webkit-font-smoothing: antialiased;
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Inter, sans-serif; }
+  #chip { position: absolute; top: 60px; left: 0; right: 0; text-align: center; }
+  #chip span { display: inline-block; padding: 12px 30px; border-radius: 40px; background: #04529A; color: #fff;
+    font-size: 34px; font-weight: 700; letter-spacing: .5px; }
+  .ln { position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap; }
+  #t1 { top: 140px; font-size: 74px; font-weight: 700; letter-spacing: -2px; color: #0A0A0A; }
+  #t1 b { color: #04529A; font-weight: 800; }
+  .tile { position: absolute; width: 156px; height: 156px; margin: -78px 0 0 -78px; border-radius: 42px; background: #fff;
+    box-shadow: 0 22px 44px -18px rgba(4,40,90,.32), 0 6px 14px -6px rgba(4,40,90,.18), 0 0 0 1.5px rgba(4,82,154,.10); }
+  .tile svg { position: absolute; left: 36px; top: 20px; width: 84px; height: 84px; }
+  .tile .lb { position: absolute; left: -40px; right: -40px; top: 112px; text-align: center; font-size: 19px; font-weight: 700; color: #0A0A0A; letter-spacing: -.2px; }
+  .on { position: absolute; inset: 0; border-radius: inherit; background: #04529A; }
+  #core { position: absolute; width: 176px; height: 176px; margin: -88px 0 0 -88px; border-radius: 52px; background: #04529A;
+    color: #fff; font-size: 84px; font-weight: 800; letter-spacing: -3px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 30px 60px -20px rgba(4,82,154,.65); }
+  #ul { position: absolute; }
+</style></head>
+<body>
+<!-- MODÈLE STUDIO MOTION : tuiles éparpillées qui s'emboîtent autour d'un cœur puis s'allument. À changer : la liste T (6 tuiles : icône + nom), le texte du cœur 'IA', le titre, les temps (ensemble 2.05, techniques 2.8). -->
+
+<div id="chip"><span>Définition</span></div>
+<div class="ln" id="t1">Un ensemble de <b id="tw">techniques</b></div>
+<svg id="ul" width="1080" height="300" style="left:0;top:180px"></svg>
+<div id="tiles"></div>
+<div id="core">IA</div>
+<script>window.CHARTE = { accent: '#04529A' };   // <- ta couleur d'accent</script>
+<script>
+const B = (window.CHARTE && window.CHARTE.accent) || '#04529A';
+const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const S = (x, w = 14) => x <= 0 ? 0 : 1 - (1 + w * x) * Math.exp(-w * x);
+const OS = (x, w = 10, z = .42) => { if (x <= 0) return 0; const wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * x) * (Math.cos(wd * x) + z * w / wd * Math.sin(wd * x)); };
+const E = x => { x = cl(x); return 1 - Math.pow(1 - x, 3); };
+// line icons, 100x100, stroke = current color
+const ic = {
+  vision: '<path d="M8 50 C28 18 72 18 92 50 C72 82 28 82 8 50Z" fill="none" stroke-width="7" stroke-linejoin="round"/><circle cx="50" cy="50" r="15" fill="none" stroke-width="7"/><circle cx="50" cy="50" r="5" class="f"/>',
+  langage: '<path d="M14 20 H86 a8 8 0 0 1 8 8 V62 a8 8 0 0 1 -8 8 H44 L24 86 V70 H14 a8 8 0 0 1 -8 -8 V28 a8 8 0 0 1 8 -8Z" fill="none" stroke-width="7" stroke-linejoin="round"/><line x1="24" y1="38" x2="76" y2="38" stroke-width="7" stroke-linecap="round"/><line x1="24" y1="53" x2="60" y2="53" stroke-width="7" stroke-linecap="round"/>',
+  donnees: '<ellipse cx="50" cy="22" rx="34" ry="11" fill="none" stroke-width="7"/><path d="M16 22 V78 C16 92 84 92 84 78 V22" fill="none" stroke-width="7"/><path d="M16 50 C16 64 84 64 84 50" fill="none" stroke-width="7"/>',
+  apprentissage: '<circle cx="18" cy="30" r="8" fill="none" stroke-width="6"/><circle cx="18" cy="70" r="8" fill="none" stroke-width="6"/><circle cx="50" cy="18" r="8" fill="none" stroke-width="6"/><circle cx="50" cy="50" r="8" fill="none" stroke-width="6"/><circle cx="50" cy="82" r="8" fill="none" stroke-width="6"/><circle cx="82" cy="50" r="9" class="f"/><path d="M26 30 L42 20 M26 32 L42 48 M26 68 L42 52 M26 70 L42 80 M58 20 L74 46 M58 50 L73 50 M58 80 L74 54" stroke-width="4.5" stroke-linecap="round"/>',
+  auto: '<path d="M50 8 l7 12 l13 -4 l2 14 l13 4 l-6 12 l9 10 l-12 7 l2 13 l-14 0 l-5 13 l-11 -8 l-11 8 l-5 -13 l-14 0 l2 -13 l-12 -7 l9 -10 l-6 -12 l13 -4 l2 -14 l13 4Z" transform="translate(0 0) scale(.92) translate(4 4)" fill="none" stroke-width="6" stroke-linejoin="round"/><circle cx="50" cy="50" r="14" fill="none" stroke-width="7"/>',
+  algo: '<path d="M32 22 L10 50 L32 78" fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M68 22 L90 50 L68 78" fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M57 16 L43 84" stroke-width="8" stroke-linecap="round"/>',
+};
+const T = [['vision', 'Vision'], ['langage', 'Langage'], ['donnees', 'Données'], ['apprentissage', 'Apprentissage'], ['auto', 'Automatisation'], ['algo', 'Algorithmes']];
+const CX = 540, CY = 545, RAD = 215;
+const box = document.getElementById('tiles');
+const els = T.map(([k, lb], i) => {
+  const a = -Math.PI / 2 + i * Math.PI / 3, d = document.createElement('div'); d.className = 'tile';
+  d.innerHTML = `<div class="on"></div><svg viewBox="0 0 100 100">${ic[k]}</svg><div class="lb">${lb}</div>`;
+  box.appendChild(d);
+  // scattered start: far out, rotated
+  const sa = a + .3, sr = 430 + (i % 2) * 40;
+  return { d, on: d.querySelector('.on'), svg: d.querySelector('svg'), lb: d.querySelector('.lb'),
+    x: CX + Math.cos(a) * RAD, y: CY + Math.sin(a) * RAD, sx: CX + Math.cos(sa) * sr, sy: CY + Math.sin(sa) * sr * .5, rot: (i % 2 ? 1 : -1) * (14 + i * 3), at: .15 + i * .07, lit: 2.8 + i * .09 };
+});
+const core = document.getElementById('core'), chip = document.getElementById('chip').firstChild, t1 = document.getElementById('t1'), ul = document.getElementById('ul');
+window.setT = t => {
+  const c = OS(t - .05, 12, .5); chip.style.transform = `scale(${.6 + .4 * c})`; chip.style.opacity = cl(c * 2);
+  const a = S(t - 1.25, 11); t1.style.transform = `translateY(${(1 - a) * 60}px)`; t1.style.opacity = cl(a * 1.4); t1.style.filter = `blur(${(1 - a) * 8}px)`;
+  const tw = document.getElementById('tw'), tl = OS(t - 2.8, 12, .45); tw.style.display = 'inline-block'; tw.style.marginLeft = '18px'; tw.style.transform = `scale(${1 + .08 * Math.sin(Math.PI * cl((t - 2.8) / .35))})`;
+  // underline drawn under "techniques"
+  const u = E((t - 2.85) / .4); const r = tw.getBoundingClientRect();
+  ul.innerHTML = u > 0 ? `<path d="M${r.left} ${r.bottom - 175} q ${r.width * u / 2} 18 ${r.width * u} 0" fill="none" stroke="${B}" stroke-width="9" stroke-linecap="round"/>` : '';
+  // core
+  const k = OS(t - 2.0, 11, .45); core.style.left = CX + 'px'; core.style.top = CY + 'px';
+  core.style.transform = `scale(${k})`; core.style.opacity = cl(k * 2);
+  // tiles: float in scattered, snap to the honeycomb on "ensemble" (2.1)
+  els.forEach((e, i) => {
+    const ap = S(t - e.at, 9), sn = OS(t - (2.05 + i * .035), 13, .5);
+    const fl = Math.sin(t * 2.2 + i) * 8 * (1 - sn);
+    const x = e.sx + (e.x - e.sx) * sn, y = e.sy + (e.y - e.sy) * sn + fl;
+    e.d.style.left = x + 'px'; e.d.style.top = y + 'px';
+    e.d.style.opacity = cl(ap * 1.5) * (1 - .35 * (1 - sn));
+    e.d.style.transform = `scale(${(.55 + .45 * ap) * (.82 + .18 * sn)}) rotate(${e.rot * (1 - sn)}deg)`;
+    const lit = S(t - e.lit, 16); e.on.style.opacity = lit;
+    e.svg.style.stroke = lit > .5 ? '#fff' : B; e.svg.querySelectorAll('.f').forEach(f => f.style.fill = lit > .5 ? '#fff' : B);
+    e.lb.style.color = lit > .5 ? '#fff' : '#0A0A0A';
+  });
+};
+window.setT(0);
+</script></body></html>

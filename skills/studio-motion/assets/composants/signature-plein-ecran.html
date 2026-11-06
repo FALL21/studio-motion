@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}body{width:1080px;height:1920px;overflow:hidden}</style></head><body>
+<!-- MODÈLE STUDIO MOTION : carte de fin plein écran (signature non dite) ; overlay avec layer: 'over' et outro: 3.2. À changer : les 3 mots, le nom en bas. -->
+<script>window.CHARTE = { accent: '#04529A' };   // <- ta couleur d'accent</script>
+<script src="lib.js"></script><script>
+// G, end card (outro, 3.2 s): the whole frame turns white (covers the camera), "Xam", "Jëf", "Jariñu" land one by one
+// with a blue rule under them, then "Abonne-toi pour ne pas rater la suite" and a subscribe button that gets tapped
+// and turns into "Abonné" with a check. Full frame 1080 x 1920.
+document.body.innerHTML = '<svg id="sv" width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute;left:0;top:0"></svg>';
+const sv = document.getElementById('sv');
+window.setT = t => {
+  _fid = 0; let h = '';
+  const bg = E(t / .35);
+  h += `<rect width="1080" height="1920" fill="${W}" opacity="${bg}"/>`;
+  h += `<circle cx="540" cy="760" r="${520 * E(t / .8)}" fill="${B}" opacity="${.06 * bg}"/>`;
+  const words = [['Mot 1', K, .25], ['Mot 2', K, .55], ['Mot 3', B, .85]]   /* <- ta signature */;
+  words.forEach(([w, c, at], i) => {
+    const p = OS(t - at, 12, .42); if (p <= 0) return;
+    h += `<g transform="translate(540 ${560 + i * 165}) scale(${p})">` + txt(0, 50, w, 150, 800, c) + `</g>`;
+  });
+  const rl = E((t - 1.15) / .4); if (rl > 0) h += `<rect x="${540 - 170 * rl}" y="1030" width="${340 * rl}" height="10" rx="5" fill="${B}"/>`;
+  h += riseText(1.35, t, 540, 1150, 'Abonne-toi pour ne pas', 54, 700, K);
+  h += riseText(1.5, t, 540, 1222, 'rater la suite', 54, 700, K);
+  // subscribe button, tapped at 2.35
+  const bp = OS(t - 1.75, 12, .45), tap = 2.35, done = t >= tap + .08;
+  if (bp > 0) {
+    const press = 1 - .07 * Math.sin(Math.PI * cl((t - tap) / .18));
+    h += `<g transform="translate(540 1360) scale(${bp * press})"><rect x="-210" y="-52" width="420" height="104" rx="52" fill="${done ? K : B}"/>`;
+    h += done ? txt(-34, 18, 'Abonné', 46, 800, W) + `<path d="M88 -2 L102 12 L128 -16" fill="none" stroke="${W}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>` : txt(0, 17, "S'abonner", 46, 800, W);
+    h += `</g>`;
+    // the finger tap: a ring where the button is pressed
+    h += ring(600, 1370, 10, 90, tap, t, .5, 6);
+  }
+  h += riseText(1.9, t, 540, 1500, 'Prénom Nom', 40, 700, B);
+  sv.innerHTML = h;
+};
+window.setT(0);
+</script></body></html>

@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}body{width:1080px;height:1920px;overflow:hidden}</style></head><body>
+<!-- MODÈLE STUDIO MOTION : un élément devient une case parmi d'autres, encadrées par un titre. À changer : la liste F (garde l'élément mis en avant), le titre 'Intelligence artificielle', les temps (pas .37, ensemble 2.42). -->
+<script>window.CHARTE = { accent: '#04529A' };   // <- ta couleur d'accent</script>
+<script src="lib.js"></script><script>
+// D, short 10.69 - 13.86 (local): "Mais ChatGPT (0) n'est pas (.37) l'intelligence artificielle (.51-1.49) dans son ensemble (2.06-2.42)."
+// ChatGPT starts as one big blue tile in the centre; on "pas" it shrinks into its slot and the other AI fields fill the
+// grid around it; on "ensemble" a big rounded frame labelled "Intelligence artificielle" draws around all of them.
+const ELEMENT = 'ChatGPT';   // <- l'élément mis en avant (doit être dans F)
+const F = ['Vision', 'Traduction', 'Voix', 'Recommandation', 'Diagnostic', 'ChatGPT', 'Robotique', 'Voiture autonome', 'Fraude', 'Prévisions', 'Reconnaissance', 'Recherche'];
+page(t => {
+  let h = '';
+  const C = 3, TW = 296, TH = 104, GX = 18, GY = 22, X0 = 540 - (C * TW + (C - 1) * GX) / 2, Y0 = 235;
+  const sh = EIO((t - .35) / .5);
+  F.forEach((f, i) => {
+    const cx = X0 + (i % C) * (TW + GX) + TW / 2, cy = Y0 + Math.floor(i / C) * (TH + GY) + TH / 2;
+    if (f === ELEMENT) {
+      const s = lerp(2.0, 1, sh), x = lerp(540, cx, sh), y = lerp(440, cy, sh), a = OS(t + .2, 12, .5);
+      h += `<g transform="translate(${x} ${y}) scale(${s * a})"><rect x="${-TW / 2}" y="${-TH / 2}" width="${TW}" height="${TH}" rx="28" fill="${B}"/>` + txt(0, 13, 'ChatGPT', 38, 800, W) + `</g>`;
+      return;
+    }
+    const a = OS(t - (.5 + i * .06), 13, .5); if (a <= 0) return;
+    const dim = 1 - .0 * a;
+    h += `<g transform="translate(${cx} ${cy}) scale(${a})" opacity="${dim}"><rect x="${-TW / 2}" y="${-TH / 2}" width="${TW}" height="${TH}" rx="28" fill="${W}" stroke="${K}" stroke-opacity=".12" stroke-width="3"/>` + txt(0, 12, f, f.length > 13 ? 30 : 34, 700, K) + `</g>`;
+  });
+  // the frame around the whole field
+  const fr = E((t - 2.0) / .55), PW = C * TW + (C - 1) * GX + 60, PH = 4 * TH + 3 * GY + 60, per = 2 * (PW + PH);
+  if (fr > 0) {
+    h += `<rect x="${540 - PW / 2}" y="${Y0 - 48}" width="${PW}" height="${PH}" rx="44" fill="none" stroke="${B}" stroke-width="7" stroke-dasharray="${per}" stroke-dashoffset="${per * (1 - fr)}"/>`;
+  }
+  h += chip(540, Y0 - 48, 'Intelligence artificielle', OS(t - 2.35, 12, .45), B, W, 38);
+  return h;
+});
+</script></body></html>

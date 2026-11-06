@@ -1,0 +1,101 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Short 6.79 - 11.27 s: "permettant à une machine d'imiter, ou même de se comporter comme un être humain"
+     A robot springs in centre on "machine" (local .56) and glides left; on "imiter" (1.42) a human bust draws itself on the
+     right and a stream of blue data particles flows from the human to the robot through an "imite" chip; on "comporter"
+     (2.73) both tilt their heads and wave the same way, the robot copying the human a beat later; on "être" (3.83) an
+     "≈" pops between them with a ring and both get a blue check. Draws in y 120 - 770. -->
+<style>
+  html, body { margin: 0; background: transparent; }
+  body { width: 1080px; height: 1920px; overflow: hidden; -webkit-font-smoothing: antialiased;
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Inter, sans-serif; }
+  svg { position: absolute; left: 0; top: 0; }
+</style></head>
+<body>
+<!-- MODÈLE STUDIO MOTION : robot et humain, flux de données, imitation, « ≈ » et coches. À changer : les temps T_M, T_I, T_C, T_E et les étiquettes 'Machine' / 'Humain'. -->
+<svg id="sv" width="1080" height="900" viewBox="0 0 1080 900"></svg>
+<script>window.CHARTE = { accent: '#04529A' };   // <- ta couleur d'accent</script>
+<script>
+const B = (window.CHARTE && window.CHARTE.accent) || '#04529A', K = '#0A0A0A', W = '#FFFFFF';
+const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const S = (x, w = 14) => x <= 0 ? 0 : 1 - (1 + w * x) * Math.exp(-w * x);
+const OS = (x, w = 10, z = .42) => { if (x <= 0) return 0; const wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * x) * (Math.cos(wd * x) + z * w / wd * Math.sin(wd * x)); };
+const E = x => { x = cl(x); return 1 - Math.pow(1 - x, 3); };
+const EIO = x => { x = cl(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const T_M = .56, T_I = 1.42, T_C = 2.73, T_E = 3.83;
+const shadow = (cx, cy, w, a) => `<ellipse cx="${cx}" cy="${cy}" rx="${w}" ry="${w * .16}" fill="${B}" opacity="${a}"/>`;
+function robot(cx, cy, s, tilt, blink, wave, smile) {
+  // head 220x190, rounded; black visor; white eye pills; antenna with a pulsing blue bulb; arm that waves
+  let g = `<g transform="translate(${cx} ${cy}) scale(${s}) rotate(${tilt})">`;
+  g += `<line x1="0" y1="-118" x2="0" y2="-150" stroke="${K}" stroke-width="8" stroke-linecap="round"/>`;
+  g += `<circle cx="0" cy="-160" r="14" fill="${B}"/><circle cx="0" cy="-160" r="${22 + 8 * Math.sin(wave * 6)}" fill="${B}" opacity=".18"/>`;
+  g += `<rect x="-128" y="-30" width="20" height="60" rx="10" fill="${K}"/><rect x="108" y="-30" width="20" height="60" rx="10" fill="${K}"/>`;
+  g += `<rect x="-112" y="-118" width="224" height="200" rx="58" fill="${W}" stroke="${K}" stroke-width="9"/>`;
+  g += `<rect x="-82" y="-78" width="164" height="96" rx="40" fill="${K}"/>`;
+  const eh = 40 * (1 - blink) + 6;
+  if (smile > .5) {
+    g += `<path d="M-50 -24 q 14 -16 28 0 M22 -24 q 14 -16 28 0" fill="none" stroke="${W}" stroke-width="9" stroke-linecap="round"/>`;
+  } else {
+    g += `<rect x="-48" y="${-30 - eh / 2}" width="24" height="${eh}" rx="12" fill="${W}"/><rect x="24" y="${-30 - eh / 2}" width="24" height="${eh}" rx="12" fill="${W}"/>`;
+  }
+  g += `<rect x="-40" y="38" width="80" height="14" rx="7" fill="${B}"/>`;
+  g += `</g>`;
+  return g;
+}
+function human(cx, cy, s, draw, tilt, fill) {
+  // head + shoulders bust, drawn on with a stroke, then filled black
+  const L = 1300, off = L * (1 - draw);
+  let g = `<g transform="translate(${cx} ${cy}) scale(${s})">`;
+  const d = `M-140 120 C-140 30 -80 -6 0 -6 C80 -6 140 30 140 120 Z`;
+  g += `<path d="${d}" fill="${K}" fill-opacity="${fill}" stroke="${K}" stroke-width="9" stroke-linejoin="round" stroke-dasharray="${L}" stroke-dashoffset="${off}"/>`;
+  g += `<g transform="rotate(${tilt} 0 -10)"><circle cx="0" cy="-86" r="66" fill="${K}" fill-opacity="${fill}" stroke="${K}" stroke-width="9" stroke-dasharray="${L * .4}" stroke-dashoffset="${L * .4 * (1 - draw)}"/></g>`;
+  g += `</g>`;
+  return g;
+}
+function check(cx, cy, p) {
+  if (p <= 0) return '';
+  const L = 70;
+  return `<g transform="translate(${cx} ${cy}) scale(${p})"><circle r="34" fill="${B}"/><path d="M-14 1 L-4 12 L16 -10" fill="none" stroke="${W}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${L}" stroke-dashoffset="${L * (1 - cl(p * 1.4 - .3))}"/></g>`;
+}
+const sv = document.getElementById('sv');
+window.setT = t => {
+  let h = '';
+  const RY = 450;
+  // robot: springs in at centre, then glides left when the human arrives
+  const rin = OS(t - (T_M - .25), 11, .45), move = EIO((t - T_I) / .6);
+  const rx = 540 - 290 * move;
+  const blink = (t > 2.2 && t < 2.32) ? 1 : 0;
+  // behaviour: both tilt their heads; the robot copies .25 s later
+  const hb = Math.sin(Math.PI * cl((t - T_C) / 1.0)), rb = Math.sin(Math.PI * cl((t - T_C - .25) / 1.0));
+  const smile = t > T_E + .1 ? 1 : 0;
+  h += shadow(rx, RY + 190, 120 * rin, .10 * rin);
+  if (rin > 0) h += robot(rx, RY, 1.05 * rin, -12 * rb, blink, t, smile);
+  // human: draws on the right on "imiter"
+  const hd = E((t - T_I) / .7), hf = E((t - T_I - .5) / .4);
+  if (hd > 0) { h += shadow(830, RY + 190, 120 * hd, .08 * hd); h += human(830, RY + 60, 1.05, hd, -12 * hb, hf); }
+  // labels under each figure
+  const lr = S(t - (T_M + .1), 12), lh = S(t - (T_I + .4), 12);
+  h += `<text x="${rx}" y="${RY + 250 + (1 - lr) * 30}" text-anchor="middle" font-size="40" font-weight="700" fill="${K}" opacity="${lr}">Machine</text>`;
+  h += `<text x="830" y="${RY + 250 + (1 - lh) * 30}" text-anchor="middle" font-size="40" font-weight="700" fill="${K}" opacity="${lh}">Humain</text>`;
+  // data stream human -> robot
+  const st = cl((t - T_I - .45) / .3) * (1 - cl((t - T_E) / .3));
+  if (st > 0) for (let i = 0; i < 14; i++) {
+    const q = ((t * .85 + i / 14) % 1), x = 700 - 330 * q, y = RY - 20 + Math.sin(q * Math.PI * 2 + i) * 26;
+    const a = Math.sin(Math.PI * q) * st, sz = 10 + (i % 3) * 3;
+    h += `<rect x="${x - sz / 2}" y="${y - sz / 2}" width="${sz}" height="${sz}" rx="3" fill="${B}" opacity="${a}"/>`;
+  }
+  // "imite" chip over the stream
+  const ch = OS(t - (T_I + .3), 12, .45) * (1 - E((t - T_E) / .25));
+  if (ch > 0) h += `<g transform="translate(540 ${RY - 120}) scale(${ch})"><rect x="-92" y="-36" width="184" height="72" rx="36" fill="${B}"/><text y="14" text-anchor="middle" font-size="38" font-weight="800" fill="${W}">imite</text></g>`;
+  // the "≈" payoff
+  const eq = OS(t - T_E, 11, .4);
+  if (eq > 0) {
+    h += `<g transform="translate(540 ${RY + 10}) scale(${eq * 1.2})"><circle r="70" fill="${W}" stroke="${B}" stroke-width="8"/><text y="30" text-anchor="middle" font-size="96" font-weight="800" fill="${B}">≈</text></g>`;
+    const wv = cl((t - T_E) / .8); if (wv < 1) h += `<circle cx="540" cy="${RY + 10}" r="${70 + 200 * E(wv)}" fill="none" stroke="${B}" stroke-width="${7 * (1 - wv)}" opacity="${1 - wv}"/>`;
+  }
+  h += check(rx + 100, RY - 120, OS(t - T_E - .25, 13, .45));
+  h += check(930, RY - 120, OS(t - T_E - .35, 13, .45));
+  sv.innerHTML = h;
+};
+window.setT(0);
+</script></body></html>

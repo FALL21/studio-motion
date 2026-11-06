@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "name": "Explicatif",
+  "creator": {
+    "name": "{{TON NOM}}",
+    "lang": "fr",
+    "niche": "{{ta niche en une phrase : sujet et public}}"
+  },
+  "colors": {
+    "paper": "#FFFFFF",
+    "ink": "#0A0A0A",
+    "accent": "{{ACCENT}}"
+  },
+  "paper": {
+    "bg": "clean",
+    "grain": 0,
+    "shadow": "4,40,90"
+  },
+  "layout": {
+    "card": {
+      "x": 66,
+      "y": 915,
+      "w": 948,
+      "h": 800,
+      "r": 44,
+      "zoom": 1.0,
+      "bias": 0.4
+    }
+  },
+  "captions": {
+    "style": "dim",
+    "size": 72,
+    "weight": 700,
+    "dimWeight": 600,
+    "maxWords": 3,
+    "color": "#9AA3AE",
+    "hi": "#0A0A0A",
+    "emphFont": "Instrument Serif",
+    "emphScale": 1.35,
+    "emphColor": "{{ACCENT}}"
+  },
+  "pace": {
+    "speed": 1.08
+  },
+  "mix": {
+    "music": -31,
+    "sfx": -30
+  },
+  "sfx": {
+    "accents": 0
+  },
+  "notes": [
+    "Textes grands : sous-titres 72 px, textes d'animation 60 à 130 px",
+    "Chaque phrase est illustrée par une animation HTML sur mesure qui montre ce qui est dit (icônes dessinées en SVG, ressorts, apparitions en flou), calée sur les mots",
+    "Mise en page : caméra dans une carte arrondie en bas, animation au-dessus (y 40 à 770), sous-titres entre les deux",
+    "Charte : {{ACCENT}}, blanc, noir. Rien d'autre",
+    "Sound design : un son doux par temps fort d'animation (pop, whoosh, impact sur la conclusion), jamais un clic par micro-élément",
+    "Signature à la fin de chaque vidéo",
+    "Mots d'une autre langue incertains : les écrire comme on les entend et demander l'orthographe avant le rendu final"
+  ]
+}

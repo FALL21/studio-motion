@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}body{width:1080px;height:1920px;overflow:hidden}</style></head><body><script src="textes.js"></script><script src="lib.js"></script><script>
+const X = (window.TEXTES || {}).e || {};   // textes modifiables dans textes.js
+// E, short 13.86 - 17.64 (local): "Alors, qu'est-ce que c'est l'intelligence (.57) artificielle (1.35) exactement (1.92) ?
+// C'est ce que nous allons découvrir (3.25)." Neural network builds, title in two lines, "?" springs, chip "Épisode 1".
+let seed = 11; const R = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const CX = 540, CY = 520, nodes = [];
+for (let i = 0; nodes.length < 40 && i < 4000; i++) { const x = CX + (R() * 2 - 1) * 240, y = CY + (R() * 2 - 1) * 160;
+  const inL = ((x - (CX - 100)) / 145) ** 2 + ((y - CY) / 155) ** 2 < 1, inR = ((x - (CX + 100)) / 145) ** 2 + ((y - CY) / 155) ** 2 < 1;
+  if (!(inL || inR) || nodes.some(n => Math.hypot(n.x - x, n.y - y) < 46)) continue; nodes.push({ x, y, d: Math.hypot(x - CX, y - CY) }); }
+nodes.sort((a, b) => a.d - b.d); nodes.forEach((n, i) => { n.at = .05 + i * .02; n.r = 7 + R() * 5; n.hub = R() < .25; });
+const edges = []; nodes.forEach((a, i) => nodes.forEach((b, j) => { if (j > i && Math.hypot(a.x - b.x, a.y - b.y) < 90) edges.push({ a, b, at: Math.max(a.at, b.at) + .08, ph: R() }); }));
+page(t => {
+  let h = `<defs><radialGradient id="g"><stop offset="0" stop-color="${B}" stop-opacity=".16"/><stop offset="1" stop-color="${B}" stop-opacity="0"/></radialGradient></defs>`;
+  h += `<circle cx="${CX}" cy="${CY}" r="${290 * E(t / .9)}" fill="url(#g)"/>`;
+  for (const e of edges) { const p = E((t - e.at) / .35); if (p <= 0) continue;
+    h += `<line x1="${e.a.x}" y1="${e.a.y}" x2="${lerp(e.a.x, e.b.x, p)}" y2="${lerp(e.a.y, e.b.y, p)}" stroke="${B}" stroke-opacity=".32" stroke-width="2.5" stroke-linecap="round"/>`;
+    if (p >= 1) { const q = (t * .9 + e.ph) % 1; h += `<circle cx="${lerp(e.a.x, e.b.x, q)}" cy="${lerp(e.a.y, e.b.y, q)}" r="4" fill="${B}" opacity="${.85 * Math.sin(Math.PI * q)}"/>`; } }
+  for (const n of nodes) { const s = OS(t - n.at, 16, .5); if (s <= 0) continue; const r = n.r * s * (n.hub ? 1.35 : 1);
+    h += n.hub ? `<circle cx="${n.x}" cy="${n.y}" r="${r + 9 * s}" fill="${B}" opacity=".14"/><circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${B}"/>` : `<circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${W}" stroke="${B}" stroke-width="3.5"/>`; }
+  h += riseText(.5, t, 540, 150, X.ligne1 ?? "C'est quoi l'IA,", 84, 800, K);
+  h += riseText(1.85, t, 510, 262, X.ligne2 ?? 'exactement', 104, 800, B);
+  const q = OS(t - 2.15, 12, .38); if (q > 0) h += `<g transform="translate(830 228) scale(${q}) rotate(${(1 - q) * -40})">` + txt(0, 34, '?', 120, 800, B) + `</g>`;
+  h += ring(CX, CY, 120, 380, 2.15, t, .9);
+  h += chip(540, 760, X.pastille ?? 'Épisode 1', OS(t - 3.2, 12, .45), K, W, 34);
+  return h;
+});
+</script></body></html>

@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}body{width:1080px;height:1920px;overflow:hidden}</style></head><body>
+<!-- MODÈLE STUDIO MOTION : un objet s'allume quand le câble l'alimente. À changer : les étiquettes 'Télévision' / 'Courant' et les temps (télévision .38, courant 1.73, électrique 2.04). -->
+<script>window.CHARTE = { accent: '#04529A' };   // <- ta couleur d'accent</script>
+<script src="lib.js"></script><script>
+// A, short 0 - 2.93: "Pour que cette télévision fonctionne, il lui faut du courant électrique, n'est-ce pas ?"
+// TV springs in on "télévision" (.38), a cable draws to the socket on "courant" (1.73), current flows on "électrique"
+// (2.04), a bolt pops on the cable and the screen lights up (2.25), a ring on "n'est-ce pas" (2.6).
+page(t => {
+  let h = '';
+  const tin = OS(t - .25, 11, .45), TX = 430, TY = 420;
+  h += shadowEl(TX, TY + 180, 170 * tin, .10 * tin);
+  const on = E((t - 2.25) / .35);
+  if (tin > 0) h += tv(TX, TY, 1.15 * tin, on, t);
+  if (on > 0) h += `<circle cx="${TX}" cy="${TY}" r="${260}" fill="${B}" opacity="${.08 * on}"/>`;
+  const so = OS(t - 1.55, 12, .45);
+  if (so > 0) h += socket(890, 600, so);
+  const d = 'M614 470 C 720 470, 740 600, 834 600', p = E((t - 1.6) / .45), fl = cl((t - 2.0) / .2);
+  h += cable(d, 280, p, fl, t);
+  const bp = OS(t - 2.04, 12, .4);
+  if (bp > 0) h += bolt(740, 500, .55 * bp, B, bp);
+  h += riseText(.45, t, TX, 140, 'Télévision', 64, 800, K);
+  h += riseText(1.8, t, 890, 730, 'Courant', 48, 800, B);
+  h += ring(TX, TY, 150, 360, 2.6, t);
+  return h;
+});
+</script></body></html>

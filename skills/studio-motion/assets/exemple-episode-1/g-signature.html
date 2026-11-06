@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}body{width:1080px;height:1920px;overflow:hidden}</style></head><body><script src="textes.js"></script><script src="lib.js"></script><script>
+const X = (window.TEXTES || {}).g || {};   // textes modifiables dans textes.js
+// G, signature said on camera (short 21.90 - 24.10, local): "Xam" (.08) "Jëf" (.59) "Jariñu" (1.13) land on his voice in the
+// stage above the camera card, a blue rule draws, "Abonne-toi pour ne pas rater la suite", then a subscribe button that
+// gets tapped and turns into "Abonné" with a check. Stage zone y 40 - 770.
+page(t => {
+  let h = '';
+  h += `<circle cx="540" cy="330" r="${330 * E(t / .6)}" fill="${B}" opacity=".06"/>`;
+  [[X.mot1 ?? 'Xam', K, .06], [X.mot2 ?? 'Jëf', K, .57], [X.mot3 ?? 'Jariñu', B, 1.1]].forEach(([w, c, at], i) => {
+    const p = OS(t - at, 13, .42); if (p <= 0) return;
+    h += `<g transform="translate(540 ${150 + i * 128}) scale(${p})">` + txt(0, 44, w, 128, 800, c) + `</g>`;
+  });
+  const rl = E((t - 1.3) / .3); if (rl > 0) h += `<rect x="${540 - 160 * rl}" y="478" width="${320 * rl}" height="9" rx="4.5" fill="${B}"/>`;
+  h += riseText(1.35, t, 540, 560, X.appel ?? 'Abonne-toi pour ne pas rater la suite', 46, 700, K);
+  const bp = OS(t - 1.5, 13, .45), tap = 1.85, done = t >= tap + .08;
+  if (bp > 0) {
+    const press = 1 - .07 * Math.sin(Math.PI * cl((t - tap) / .18));
+    h += `<g transform="translate(540 665) scale(${bp * press})"><rect x="-200" y="-50" width="400" height="100" rx="50" fill="${done ? K : B}"/>`;
+    h += done ? txt(-34, 17, X.boutonApres ?? 'Abonné', 44, 800, W) + `<path d="M84 -2 L98 12 L124 -16" fill="none" stroke="${W}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>` : txt(0, 16, X.bouton ?? "S'abonner", 44, 800, W);
+    h += `</g>`;
+    h += ring(600, 675, 10, 90, tap, t, .5, 6);
+  }
+  return h;
+});
+</script></body></html>

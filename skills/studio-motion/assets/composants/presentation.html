@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}body{width:1080px;height:1920px;overflow:hidden}</style></head><body>
+<!-- MODÈLE STUDIO MOTION : carte de présentation. À changer : NOM, METIER, les deux pastilles et les temps. -->
+<script>window.CHARTE = { accent: '#04529A' };   // <- ta couleur d'accent</script>
+<script src="lib.js"></script><script>
+// F, short 17.64 - 20.80 (local): "Moi c'est Mame Bou (.2) Fall (.43), ingénieur (.72) en intelligence artificielle (1.33)
+// et big data (2.6)." A white name card rises, the name types in, a blue rule draws, the title follows, two chips pop.
+page(t => {
+  let h = '';
+  const c = S(t - .05, 10), y = 260 + (1 - c) * 80;
+  if (c > 0) h += `<g opacity="${cl(c * 1.5)}"><rect x="110" y="${y}" width="860" height="430" rx="44" fill="${W}" stroke="${B}" stroke-opacity=".12" stroke-width="3"/></g>`;
+  const name = 'Prénom Nom'   /* <- ton nom */, n = Math.round(name.length * E((t - .15) / .45));
+  if (n > 0) h += txt(540, y + 140, name.slice(0, n), 92, 800, K);
+  const ln = E((t - .65) / .45); if (ln > 0) h += `<rect x="${540 - 220 * ln}" y="${y + 180}" width="${440 * ln}" height="8" rx="4" fill="${B}"/>`;
+  h += riseText(.72, t, 540, y + 268, 'Ton métier', 56, 800, B);
+  h += chip(375, y + 350, 'Domaine 1', OS(t - 1.3, 12, .45), B, W, 33);
+  h += chip(790, y + 350, 'Domaine 2', OS(t - 2.55, 12, .45), K, W, 33);
+  return h;
+});
+</script></body></html>
